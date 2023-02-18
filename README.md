@@ -46,13 +46,7 @@ To return back to local docker env
 
 ### Setup the queues
 
-`kubectl run vernemq --image=erlio/docker-vernemq --env="DOCKER_VERNEMQ_ACCEPT_EULA=yes" --env="DOCKER_VERNEMQ_ALLOW_ANONYMOUS=on" --env="MQTT_TOPIC=thndr-trading"`
-
-`kubectl expose pod vernemq --port=1883 --target-port=1883 --name=vernemq-service --type=ClusterIP`
-
-`kubectl run streamer --image=thndr/streamer:0.2 --env="MQTT_HOST=vernemq-service" --env="MQTT_PORT=1883" --env="MQTT_TOPIC=thndr-trading"`
-
-`kubectl expose pod streamer --type=ClusterIP --name=streamer-service --port=1883 --target-port=1883`
+`kubectl apply -f k8s/queues/queues.yaml`
 
 ### Build the api image
 

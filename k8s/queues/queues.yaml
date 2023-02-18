@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: vernemq
+  name: vernemq
+spec:
+  containers:
+  - env:
+    - name: DOCKER_VERNEMQ_ACCEPT_EULA
+      value: "yes"
+    - name: DOCKER_VERNEMQ_ALLOW_ANONYMOUS
+      value: "on"
+    - name: MQTT_TOPIC
+      value: thndr-trading
+    image: erlio/docker-vernemq
+    name: vernemq
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    run: vernemq
+  name: vernemq-service
+spec:
+  ports:
+  - port: 1883
+    protocol: TCP
+    targetPort: 1883
+  selector:
+    run: vernemq
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: streamer
+  name: streamer
+spec:
+  containers:
+  - env:
+    - name: MQTT_HOST
+      value: vernemq-service
+    - name: MQTT_PORT
+      value: "1883"
+    - name: MQTT_TOPIC
+      value: thndr-trading
+    image: thndr/streamer:0.2
+    name: streamer
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    run: streamer
+  name: streamer-service
+spec:
+  ports:
+  - port: 1883
+    protocol: TCP
+    targetPort: 1883
+  selector:
+    run: streamer
+  type: ClusterIP
+status:
+  loadBalancer: {}
