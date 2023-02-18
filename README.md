@@ -92,3 +92,9 @@ Grafana can be used to visualize the metrics collected by Prometheus. The follow
 ### Access the Grafana
 
 `minikube service grafana -n thndr`
+
+### Add Prometheus Data Source
+http://prometheus-server:80
+
+### Import Dashboard
+https://grafana.com/grafana/dashboards/11663-k8s-cluster-metrics/
